@@ -1,6 +1,7 @@
 #include "my_link_list_class.h"
 
-Node<T> *set_position(int pos) const// 可以优化，使用一个变量保存之前访问过的对象
+template<typename T>
+Node<T> * LinkList::set_position(int pos) const// 可以优化，使用一个变量保存之前访问过的对象
 /* 
     Pre: 0 <= pos < count
     Post: Return a pointer to the Node in position */
@@ -10,19 +11,58 @@ Node<T> *set_position(int pos) const// 可以优化，使用一个变量保存�
     return q;
 }
 
-void set_position(int position) const// after optimize
-{
-/* 
-    Pre:
-    Post: set current referrences the Node at position */
-    if (position < current_position){
-        current_position = 0;
-        current = head;
-    }
-    for (; current_position != position; current_position++)
-        current = current->next;
+// void set_position(int position) const// after optimize
+// {
+// /* 
+//     Pre:
+//     Post: set current referrences the Node at position */
+//     if (position < current_position){
+//         current_position = 0;
+//         current = head;
+//     }
+//     for (; current_position != position; current_position++)
+//         current = current->next;
+// }
+
+
+template<typename T>
+LinkList::LinkList(){
+    head = NULL;
+    count = 0;
 }
 
+template<typename T>
+LinkList::~LinkList(){
+    clear();
+}
+
+template<typename T>
+void LinkList::clear() 
+    Node<T> *cur_node = head, *del_node = NULL;
+    while (!empty())
+    {
+        del_node = cur_node;
+        cur_node = cur_node->next;
+        delete del_node;
+    }
+}
+
+template<typename T>
+bool LinkList::empty() const{
+    return (head == NULL);
+}
+
+template<typename T>
+bool LinkList::full() const{
+    return false;
+}
+
+template<typename T>
+int LinkList::size() const{
+    return count;
+}
+
+template<typename T>
 Error_code LinkList::insert(int position, const T & x){
 /* 
     Pre: position: no limitation, maybe return Error_code
@@ -48,4 +88,72 @@ Error_code LinkList::insert(int position, const T & x){
     count++;
     return success;
 }
+
+template<typename T>
+Error_code LinkList::remove(int position, T & x){
+/* 
+    Pre: position : no limit
+    Post: 
+        if position don't make sense, return error_code*/
+    if (position < 0 || position >= count)
+        return range_error;
+    Node<T> *previous = NULL, *followint = NULL, *del_node = NULL;
+
+    if (position == 0){
+        del_node = head;        
+        following = head->next;
+    }
+    else {
+        previous = set_position(position-1);
+        del_node = previous->next;
+        following = del_node->next;
+    }
+    x = del_node->data_;
+    delete del_node;
+    if (position == 0){
+        head = following;
+    }
+    else {
+        previous->next = following;
+    }
+    count--;
+    return success;
+}
+
+template<typename T>
+Error_code LinkList::retrieve(int position, T & x) const{
+/* 
+    Pre:
+    Post: 
+        if 0 <= position < count,  */
+    if (position < 0 || position >= count)
+        return range_error;
+    x = set_position(position)->data_;
+    return success;
+}
+
+template<typename T>
+Error_code LinkList::replace(int position, const T & x){
+/* 
+    Pre:
+    Post: */
+    if (position < 0 || position >= count)
+        return range_error;
+    set_position(position)->data_ = x;
+    return success;
+}
+
+
+template<typename T>
+void LinkList::traverse(void (*visit)(T &)){
+/* 
+    Pre: 
+    Post: visit all the entry in the list, and use a function on every node */
+    Node<T> *cur_node = head;
+    while (head){
+        (*visit)(head->data_);
+        cur_node = cur_node->next;
+    }
+}
+
 

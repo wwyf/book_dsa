@@ -46,6 +46,7 @@ index ListArray::new_node(){
     workspace[new_index].next = -1;
     return new_index;
 }
+
 void delete_node(index n) const{
 /* 
     Pre: the list has a node stored in index old_index 

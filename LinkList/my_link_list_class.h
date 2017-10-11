@@ -1,5 +1,4 @@
 #include <iostream>
-
 template <typename T>
 struct Node{
 // data member
@@ -11,17 +10,26 @@ struct Node{
 };
 
 enum Error_code{
-
+    success,
+    range_error
 };
 
 template <typename T>
 class LinkList{
 public:
+    LinkList();
     ~LinkList();
     // LinkList();
     LinkList(const LinkList<T> & copy);
-    void append(T t);
+    void clear();
+    bool empty() const;
+    bool full() const;
+    int size() const;
     Error_code insert(int pos, const T & x);
+    Error_code remove(int position, T & x);
+    Error_code retrieve(int position, T & x) const;
+    Error_code replace(int position, const T & x);
+    void traverse(void (*visit)(T &));
 protected:
     int count;
     Node<T> *head;
