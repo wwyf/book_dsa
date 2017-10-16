@@ -1,7 +1,7 @@
 #include "my_link_list_class.h"
 
 template<typename T>
-Node<T> * LinkList::set_position(int pos) const// 可以优化，使用一个变量保存之前访问过的对象
+Node<T> * LinkList<T>::set_position(int position) const// 可以优化，使用一个变量保存之前访问过的对象
 /* 
     Pre: 0 <= pos < count
     Post: Return a pointer to the Node in position */
@@ -26,18 +26,18 @@ Node<T> * LinkList::set_position(int pos) const// 可以优化，使用一个变
 
 
 template<typename T>
-LinkList::LinkList(){
+LinkList<T>::LinkList(){
     head = NULL;
     count = 0;
 }
 
 template<typename T>
-LinkList::~LinkList(){
+LinkList<T>::~LinkList(){
     clear();
 }
 
 template<typename T>
-void LinkList::clear() 
+void LinkList<T>::clear(){ 
     Node<T> *cur_node = head, *del_node = NULL;
     while (!empty())
     {
@@ -48,22 +48,22 @@ void LinkList::clear()
 }
 
 template<typename T>
-bool LinkList::empty() const{
+bool LinkList<T>::empty() const{
     return (head == NULL);
 }
 
 template<typename T>
-bool LinkList::full() const{
+bool LinkList<T>::full() const{
     return false;
 }
 
 template<typename T>
-int LinkList::size() const{
+int LinkList<T>::size() const{
     return count;
 }
 
 template<typename T>
-Error_code LinkList::insert(int position, const T & x){
+Error_code LinkList<T>::insert(int position, const T & x){
 /* 
     Pre: position: no limitation, maybe return Error_code
     Post: if position < 0 and position > count, return Error_code
@@ -90,7 +90,7 @@ Error_code LinkList::insert(int position, const T & x){
 }
 
 template<typename T>
-Error_code LinkList::remove(int position, T & x){
+Error_code LinkList<T>::remove(int position, T & x){
 /* 
     Pre: position : no limit
     Post: 
@@ -121,7 +121,7 @@ Error_code LinkList::remove(int position, T & x){
 }
 
 template<typename T>
-Error_code LinkList::retrieve(int position, T & x) const{
+Error_code LinkList<T>::retrieve(int position, T & x) const{
 /* 
     Pre:
     Post: 
@@ -133,7 +133,7 @@ Error_code LinkList::retrieve(int position, T & x) const{
 }
 
 template<typename T>
-Error_code LinkList::replace(int position, const T & x){
+Error_code LinkList<T>::replace(int position, const T & x){
 /* 
     Pre:
     Post: */
@@ -145,7 +145,7 @@ Error_code LinkList::replace(int position, const T & x){
 
 
 template<typename T>
-void LinkList::traverse(void (*visit)(T &)){
+void LinkList<T>::traverse(void (*visit)(T &)){
 /* 
     Pre: 
     Post: visit all the entry in the list, and use a function on every node */
