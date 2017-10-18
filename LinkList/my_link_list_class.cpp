@@ -7,7 +7,7 @@ Node<T> * LinkList<T>::set_position(int position) const// 可以优化，使用�
     Post: Return a pointer to the Node in position */
 {
     Node<T> *q = head;
-    for (int i = 0; i < position; i++) q = q->next;
+    for (int i = 0; i < position; i++) q = q->next_;
     return q;
 }
 
@@ -39,10 +39,12 @@ LinkList<T>::~LinkList(){
 template<typename T>
 void LinkList<T>::clear(){ 
     Node<T> *cur_node = head, *del_node = NULL;
-    while (!empty())
+    // while (!empty())  
+    while (cur_node)
     {
         del_node = cur_node;
-        cur_node = cur_node->next;
+        cur_node = cur_node->next_;
+        count--;
         delete del_node;
     }
 }
@@ -73,18 +75,18 @@ Error_code LinkList<T>::insert(int position, const T & x){
         return range_error;
     }
     Node<T> *previous = NULL, *following = NULL, *new_node = NULL;
-    if (position = 0){
+    if (position == 0){
         following = head;
     }
     else{
-        previous = set_positionition(position-1);
-        following = previous->next;
+        previous = set_position(position-1);
+        following = previous->next_;
     }
     new_node = new Node<T>(x, following);
     if (position == 0)
         head = new_node;
     else
-        previous->next = new_node;
+        previous->next_ = new_node;
     count++;
     return success;
 }
@@ -97,16 +99,16 @@ Error_code LinkList<T>::remove(int position, T & x){
         if position don't make sense, return error_code*/
     if (position < 0 || position >= count)
         return range_error;
-    Node<T> *previous = NULL, *followint = NULL, *del_node = NULL;
+    Node<T> *previous = NULL, *following = NULL, *del_node = NULL;
 
     if (position == 0){
         del_node = head;        
-        following = head->next;
+        following = head->next_;
     }
     else {
         previous = set_position(position-1);
-        del_node = previous->next;
-        following = del_node->next;
+        del_node = previous->next_;
+        following = del_node->next_;
     }
     x = del_node->data_;
     delete del_node;
@@ -114,7 +116,7 @@ Error_code LinkList<T>::remove(int position, T & x){
         head = following;
     }
     else {
-        previous->next = following;
+        previous->next_ = following;
     }
     count--;
     return success;
@@ -150,9 +152,9 @@ void LinkList<T>::traverse(void (*visit)(T &)){
     Pre: 
     Post: visit all the entry in the list, and use a function on every node */
     Node<T> *cur_node = head;
-    while (head){
-        (*visit)(head->data_);
-        cur_node = cur_node->next;
+    while (cur_node != NULL){
+        (*visit)(cur_node->data_);
+        cur_node = cur_node->next_;
     }
 }
 

@@ -1,6 +1,6 @@
 
 #include<stdio.h>
-
+// 以前写的
 int binary_search(int num[],int l,int r,int key);
 int bi_search_r(int num[],int length,int key);
 int bi_search_l(int num[],int length,int key);
