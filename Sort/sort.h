@@ -1,16 +1,23 @@
 
-#include <stdio>
+#include <cstdio>
 
 void bubble_sort(int num[],int length);
 void select_sort(int num[],int length);
 void insert_sort(int num[],int length);
+// void shell_sort(int num[], int length);
 void merge_sort(int num[],int l,int r);
 void merge_sort2(int num[],int l,int m,int r);
 void quick_sort(int num[],int l,int r);
 void bucket_sort(int num[],int length);
 void bitmap_sort(int num[],int length);
 
-void swap(int* a,int* b);
+
+template<typename T>
+void swap(T* a,T* b){
+	T temp = *a;
+	*a = *b; 
+	*b = temp;
+}
 
 void bubble_sort(int num[],int length)
 {
@@ -37,22 +44,26 @@ void select_sort(int num[],int length)
 	}		
 }
 
-void insert_sort(int num[],int length)// 最好情况极好，n-1次比较即可，有时候还有点用, 但是赋值次数过多，如果赋值操作代价过高，慎用
-// 插入排序
-{
-	int i,j;
-	for (first_unsorted = 1 ; first_unsorted < length; first_unsorted++){
-		if (num[first_unsorted-1] > num[first_unsorted]){
-			j = first_unsorted;
-			int temp = num[first_unsorted]; // temp ： 需要插入的元素的值
-			while ( j > 0 && temp < num[j-1]){// j 的含义是那一个需要插入的元素应该要放在的position
-				num[j] = num[j-1];
-				j--;
-			}
-			num[j] = temp;
-		}
+
+void insert_sort(int num[], int n){// 插入排序  赋值操作代价较高
+    int i, j;
+    for (i = 0; i < n; i++){
+        for (j = i-1; j >= 0 && num[j] > num[j+1]; j--)
+            swap(&num[j],&num[j+1]);
+    }
+}
+
+template<typename T>
+void shell_sort(T num[], int length){
+	int i, j, gap; // gap:步长
+	for (gap = length >> 1; gap > 0; gap >>= 1)  // 对不同的步长进行插入排序,步长序列为 length/(2^n)
+		for (i = 0; i < length; i++){ // 对特定步长进行插入排序
+			for (j = i - gap; j >= 0 && num[j] > num[j+gap]; j -= gap)
+				swap<T>(&num[j], &num[j+gap]);
 	}
 }
+
+// template void shell_sort<int>(int num[], int length);
 
 void merge_sort2(int num[],int l,int m,int r)
 {
@@ -96,15 +107,15 @@ void merge_sort(int num[],int l,int r)//入口函数
 // 完成后，递归执行
 // inspired by yb
 void quick_sort(int num[], int l, int r){
-	if (l >= end) return ;
-	int k = beg;
+	if (l >= r) return ;
+	int k = l;
 	int pivot = num[r];
 	for (int i = l; i < r; i++){
 		if (num[i] < pivot){
-			swap(num[i], num[k++]);// k是在该数组前面已经分好类的数中，比pivot大的第一个数。作为数组中比pivot小，大的数的分界线
+			swap(&num[i], &num[k++]);// k是在该数组前面已经分好类的数中，比pivot大的第一个数。作为数组中比pivot小，大的数的分界线
 		}
 	}
-	swap(num[k], num[r]);// 交换pivot与num[k]，确保pivot在数组中间 
+	swap(&num[k], &num[r]);// 交换pivot与num[k]，确保pivot在数组中间 
 	quick_sort(num, l, k-1);
 	quick_sort(num, k+1, r);
 }
@@ -137,3 +148,4 @@ void bitmap_sort(int num[],int length)
 		}			
 	}
 }
+

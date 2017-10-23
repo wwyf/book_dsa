@@ -97,21 +97,20 @@ void MyList<List_entry>::clear()
     current = NULL;
     curPosition = 0;
 }
-// {
-//     Node<List_entry> *p, *q;
-//     if (current == NULL) return;
-//     for (p = current->back; p; p = q) {
-//     q = p->back;
-//     delete p;
-//     }
-//     for (p = current; p; p = q) {
-//     q = p->next;
-//     delete p;
-//     }
-//     count = 0;
-//     current = NULL;
-//     current_position = −1;
-//     }
+    // Node<List_entry> *p, *q;
+    // if (current == NULL) return;
+    // for (p = current->back; p; p = q) {
+    //     q = p->back;
+    //     delete p;
+    // }
+    // for (p = current; p; p = q) {
+    //     q = p->next;
+    //     delete p;
+    // }
+    // count = 0;
+    // current = NULL;
+    // current_position = −1;
+    // }
 
 template<typename List_entry>
 bool MyList<List_entry>::empty() const {
