@@ -14,7 +14,8 @@ struct Node{
 
 enum Error_code{
     success,
-    range_error
+    range_error,
+    fail
 };
 
 template <typename T>

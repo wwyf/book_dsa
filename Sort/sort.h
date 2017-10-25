@@ -47,8 +47,8 @@ void select_sort(int num[],int length)
 
 void insert_sort(int num[], int n){// 插入排序  赋值操作代价较高
     int i, j;
-    for (i = 0; i < n; i++){
-        for (j = i-1; j >= 0 && num[j] > num[j+1]; j--)
+    for (i = 0; i < n; i++){// 开始排第i个元素，并且认为之前的元素已经有序
+        for (j = i-1; j >= 0 && num[j] > num[j+1]; j--)// 将第i个元素插入到前面的有序序列中，一旦到达合适的位置马上停止循环
             swap(&num[j],&num[j+1]);
     }
 }

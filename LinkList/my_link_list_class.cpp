@@ -76,6 +76,7 @@ Error_code LinkList<T>::insert(int position, const T & x){
     }
     Node<T> *previous = NULL, *following = NULL, *new_node = NULL;
     if (position == 0){
+        previous = NULL;
         following = head;
     }
     else{
@@ -91,6 +92,7 @@ Error_code LinkList<T>::insert(int position, const T & x){
     return success;
 }
 
+
 template<typename T>
 Error_code LinkList<T>::remove(int position, T & x){
 /* 
@@ -102,6 +104,7 @@ Error_code LinkList<T>::remove(int position, T & x){
     Node<T> *previous = NULL, *following = NULL, *del_node = NULL;
 
     if (position == 0){
+        previous = NULL;
         del_node = head;        
         following = head->next_;
     }
@@ -158,4 +161,23 @@ void LinkList<T>::traverse(void (*visit)(T &)){
     }
 }
 
+
+template<typename T>
+void LinkList<T>::reverse(List & a_list)
+/* reverses the order of all entries in a_list */
+{
+    List temp;
+    T item;
+    Error_code outcome = success;
+    for (int i = 0; i < a_list.size(); i++){
+        a_list.retrieve(i, item);
+        temp.insert(i, item);
+        // if (temp.insert(i, item) != success) outcome = fail ;
+
+    }
+    for (int j = 0; j < a_list.size(); j++){
+        temp.retrieve(j, item);
+        a_list.replace(a_list.size()-1-j, item);
+    }
+}
 
