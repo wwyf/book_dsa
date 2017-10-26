@@ -1,17 +1,81 @@
 #include <iostream>
+using namespace std;
 
-
+template<typename Record>
+struct Node{
+    Record entry;
+    Node<Record> *next;
+    Node<Record>(Record e = 0, Node<Record> *n = NULL){
+        entry = e;
+        next = n;
+    }
+};
 template<typename Record>
 class Sortable_list{
 public:
-    
+    Sortable_list<Record>(){
+        head = NULL;
 
+    }    
+    void insert(int position, Record entry);
+    void print();
+    void insertion_sort();
+    void merge_sort();
+    void recursive_merge_sort(Node<Record> * &sub_list);
+    Node<Record>* divide_from(Node<Record> *sub_list);
+    Node<Record>* merge(Node<Record> *first, Node<Record> *second);
+    void partition(Node<Record> *sub_list,
+                                        Node<Record> *&first_small, Node<Record> *&last_small,
+                                        Node<Record> *&first_large, Node<Record> *&last_large);
+    void recursive_quick_sort(Node<Record> *&first_node,
+                                                    Node<Record> *&last_node);
+    void quick_sort();
 private:
-    
+    Node<Record> * setPosition(int position);
+    Node<Record> *head;    
+};
+
+template <typename Record>
+void Sortable_list<Record>::insert(int position, Record entry){
+    // 需要处理position异常情况
+    Node<Record> *pre_node = NULL, *new_node = NULL, *next_node = NULL;
+    if (position == 0){
+        pre_node = NULL;
+        next_node = head;
+    }
+    else {
+        pre_node = setPosition(position-1);
+        next_node = pre_node->next;
+    }
+    new_node = new Node<Record>(entry, next_node);
+    if (position != 0)  pre_node->next = new_node;
+    else head = new_node;
+    // this->print();
+}
+
+template<typename Record>
+void Sortable_list<Record>::print(){
+    // position must make sense
+    Node<Record> *cur_node = head;
+    cout << head->entry;
+    cur_node = cur_node->next;
+    while (cur_node){
+        cout << " " << cur_node->entry;
+        cur_node = cur_node->next;
+    }
 }
 
 template <typename Record>
-]void Sortable_list<Record>::insertion_sort(){
+Node<Record> * Sortable_list<Record>::setPosition(int position){
+    Node<Record> *cur_node = head;
+    for (int i = 0; i < position; i++){
+        cur_node = cur_node->next;
+    }
+    return cur_node;
+}
+
+template <typename Record>
+void Sortable_list<Record>::insertion_sort(){
     Node <Record> *first_unsorted,*last_sorted, *current, *trailing;
     if (head == NULL ) return ;
     last_sorted = head;
@@ -30,7 +94,7 @@ template <typename Record>
             trailing = head;
             current = trailing->next;
             while (first_unsorted->entry > current->entry){// 从头开始遍历，找到第一个大于first->unsorted->entry的节点，并保存它的前一个节点
-                trail = current;
+                trailing = current;
                 current = trailing->next;
             }
             // 上面的循环中，没有等号，所以一旦循环到自己，就会退出。
@@ -49,35 +113,35 @@ template <typename Record>
 }
 
 
-template<typename Record>
-void Sortable_list<Record>::selection_sort(){
-    if (head == NULL) return ;
-    Node <Record> *current, *first_unsorted, *last_sorted;
-    Node <Record> *min_node;
-    Node <Record> *new_head = NULL;
-    first_unsorted = head;
-    current = head;
-    while(first_unsorted){
-        current = first_unsorted;
-        min_node = first_unsorted;
-        // first_unsorted 到 末尾的最小节点
-        while (current){
-            if (min_node->entry > current->entry)
-                min_node = current;
-            current = current->next;
-        }
+// template<typename Record>
+// void Sortable_list<Record>::selection_sort(){
+//     if (head == NULL) return ;
+//     Node <Record> *current, *first_unsorted, *last_sorted;
+//     Node <Record> *min_node;
+//     Node <Record> *new_head = NULL;
+//     first_unsorted = head;
+//     current = head;
+//     while(first_unsorted){
+//         current = first_unsorted;
+//         min_node = first_unsorted;
+//         // first_unsorted 到 末尾的最小节点
+//         while (current){
+//             if (min_node->entry > current->entry)
+//                 min_node = current;
+//             current = current->next;
+//         }
         
-    }
-}
+//     }
+// }
 
-template <typename Record>
-void Sortable_list<Record>::swap(int low, int high){
-    Record low_r, high_r;
-    retrieve(low, low_r);
-    retrieve(high, high_r);
-    replave(low, high_r);
-    replace(high, low_r);
-}
+// template <typename Record>
+// void Sortable_list<Record>::swap(int low, int high){
+//     Record low_r, high_r;
+//     retrieve(low, low_r);
+//     retrieve(high, high_r);
+//     replave(low, high_r);
+//     replace(high, low_r);
+// }
 
 
 
@@ -90,7 +154,7 @@ template<typename Record>
 void Sortable_list<Record>::recursive_merge_sort(Node<Record> * &sub_list){
     // 保证完成一次后，sub_list作为头指针指向的链表是有序的，由于头指针可能会变，所以就使用指针的引用，方便修改头指针
     if (sub_list != NULL && sub_list->next != NULL){// 保证至少有两个节点才有归并的意义
-        Node<Record> *mid_list = divide_from_list(sub_list);
+        Node<Record> *mid_list = divide_from(sub_list);
         recursive_merge_sort(sub_list);
         recursive_merge_sort(mid_list);
         sub_list = merge(sub_list, mid_list);// 合并之后，修改该子列的头指针
@@ -98,14 +162,14 @@ void Sortable_list<Record>::recursive_merge_sort(Node<Record> * &sub_list){
 }
 
 template<typename Record>
-void Sortable_list<Record>::divide_from(Node<Record> *sub_list){
+Node<Record>* Sortable_list<Record>::divide_from(Node<Record> *sub_list){
     /* 
     1. 空表直接返回
     2. 只有一个元素，返回NULL
     3. 两个元素及以上，返回中间节点的指针
     4. 若奇数个元素，保证前半段链表元素数比后半段链表多1
     5. 确保切断之后，两个链表都是以NULL结尾 */
-    if (sub_list == NULL) return;
+    if (sub_list == NULL) return NULL;
     Node<Record> *first_end,// 前半段链表的末尾
                 * second_begin,// 后半段链表的头
                 * position; // 用来遍历的临时指针
@@ -125,7 +189,7 @@ void Sortable_list<Record>::divide_from(Node<Record> *sub_list){
 
 
 template<typename Record>
-void Sortable_list<Record>::merge(Node<Record> *first, Node<Record> *second){
+Node<Record> * Sortable_list<Record>::merge(Node<Record> *first, Node<Record> *second){
     Node<Record> *last_sorted;
     Node<Record> combined;
     last_sorted = &combined; // 这个很奇怪诶 // 先创建一个节点，默认有头节点，避免各种情况的讨论
@@ -154,6 +218,11 @@ template <class Record>
 void Sortable_list<Record>::partition(Node<Record> *sub_list,
                                       Node<Record> *&first_small, Node<Record> *&last_small,
                                       Node<Record> *&first_large, Node<Record> *&last_large)
+/* 
+作用：将以sub_list为头，NULL为末尾的链表分成三部分
+1. 头节点作为pivot，不变，头节点的成员变量不管
+2. 除头节点之后的那一段链表分为两部分，一条是比pivot小的链表，以first_small， last_small为头尾节点，其中尾节点->next指向NULL。另一条类似 
+3. 传引用，作为函数返回值*/
 {
     Record pivot = sub_list->entry;
     sub_list = sub_list->next;
@@ -188,15 +257,18 @@ void Sortable_list<Record>::recursive_quick_sort(Node<Record> *&first_node,
                   first_large, last_large);
         recursive_quick_sort(first_small, last_small);
         recursive_quick_sort(first_large, last_large);
-        if (last_large != NULL)
-            last_node = last_large;
+        // 确定排序后的链表的末节点
+        if (last_large != NULL) 
+            last_node = last_large;// 后半段有至少一个节点
         else
-            last_node = first_node;
+            last_node = first_node;// 后半段没有节点，前半段至多一个节点
+        // pivot 插入到前半段和后半段的中间
         first_node->next = first_large;
+        // 先把后半段接上去，如果前半段为空的话就不管了，当前节点恰好是起始节点
         if (first_small != NULL)
         {
-            last_small->next = first_node;
-            first_node = first_small;
+            last_small->next = first_node;// 前半段链表末尾接上pivot
+            first_node = first_small;// 头节点修改为新头节点
         }
     }
 }
@@ -213,4 +285,19 @@ void Sortable_list<Record>::quick_sort()
     if (head == NULL || head->next == NULL)
         return;
     recursive_quick_sort(head, head->next);
+}
+
+int main(){
+    Sortable_list<int> test;
+    // test.insert(0,3);
+    for (int i = 0; i < 10; i++){
+        test.insert(0, i);
+    }
+    test.print();
+    test.merge_sort();
+    test.print();
+    // test.insert(0, 123);
+    // test.quick_sort();
+    // test.print();
+    return 0;
 }
