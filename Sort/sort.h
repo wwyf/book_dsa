@@ -120,6 +120,37 @@ void quick_sort(int num[], int l, int r){
 	quick_sort(num, k+1, r);
 }
 
+template <class Record>
+void swap(Record * lhs, Record *rhs){
+    Record temp = *lhs;
+    *lhs = *rhs;
+    *rhs = temp;
+}
+
+template <class Record> 
+void quick_sort(Record* startPointer, Record* endPointer){
+    if (startPointer == endPointer) return ;
+    if (startPointer == NULL) return ;
+    Record pivot = *startPointer;
+    Record *last_small = startPointer;
+    Record *exce_last = startPointer+1;
+// 这里需要想清楚， 这里是将pivot 放在数组前面不动，
+// last_small 指向比pivot小的一段的最后一个数，
+// exce_last指向的是已遍历区域的超尾元素
+    while (exce_last != endPointer){
+        if( *(exce_last) < pivot ){
+            swap(last_small+1, exce_last);
+            last_small++;
+        }
+        exce_last++;
+    }
+    swap(startPointer, last_small);
+    quick_sort(startPointer, last_small);
+    quick_sort(last_small+1, endPointer);
+}
+
+
+
 void bucket_sort(int num[],int length)
 {
 	int temp[20] = {0}; // 初始化桶
