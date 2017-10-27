@@ -63,7 +63,6 @@ void Sortable_list<Record>::print(){
         cout << " " << cur_node->entry;
         cur_node = cur_node->next;
     }
-    cout << endl;
 }
 
 template <typename Record>
@@ -176,7 +175,7 @@ Node<Record>* Sortable_list<Record>::divide_from(Node<Record> *sub_list){
                 * position; // 用来遍历的临时指针
     first_end = sub_list;
     position = sub_list->next;
-    while (position->next){// 每一次循环，position前进两步，first_end前进一步
+    while (position){// 每一次循环，position前进两步，first_end前进一步
         position = position->next; // 先试探性的走一步
         if (position->next){
             position = position->next;
@@ -294,11 +293,11 @@ int main(){
     for (int i = 0; i < 10; i++){
         test.insert(0, i);
     }
+    test.print();
+    test.merge_sort();
+    test.print();
+    // test.insert(0, 123);
+    // test.quick_sort();
     // test.print();
-    // test.merge_sort();
-    test.print();
-    test.insert(0, 123);
-    test.quick_sort();
-    test.print();
     return 0;
 }
