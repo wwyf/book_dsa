@@ -288,6 +288,13 @@ void Sortable_list<Record>::quick_sort()
     recursive_quick_sort(head, head->next);
 }
 
+
+
+// template<typename Record>
+// void Sortable_list<Record>::heap_sort(){
+
+// }
+
 int main(){
     Sortable_list<int> test;
     // test.insert(0,3);
