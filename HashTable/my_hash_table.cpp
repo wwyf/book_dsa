@@ -1,15 +1,31 @@
 #include <iostream>
+#include <string>
 using namespace std;
-
+// 增删改查
 const int hash_size = 1009;
 
-class Key: public String{
 
+// the size of key is 8
+class Key{
 public:
+    Key(const std::string & str)；
     char key_letter(int position) cosnt;
     void make_bland();
-
+private:
+    std::string key;
 };
+
+Key::Key(const std::string &str){
+    key = str;
+}
+
+char Key::key_letter(int position) const{
+    return key[position];
+}
+
+void Key::make_bland(){
+
+}
 
 
 int hash(const Key &target){
@@ -19,6 +35,10 @@ int hash(const Key &target){
     }
     return value % hash_size;
 }
+Key::Key(const std::string & str){
+    key = str;
+}
+
 
 // solve collision
 
@@ -28,6 +48,7 @@ int hash(const Key &target){
     3. quadratic probing */
 
 // quadratic probing
+const inst hash_size = 997;
 class Hash_table{
 public:
     Hash_table();
@@ -65,10 +86,10 @@ Error_code Hash_table::insert(const Record &new_entry)
     increment = 1;
     while (table[probe] != null         // Is the location empty?
            && table[probe] != new_entry // Duplicate key?
-           && probe_count < (hash_size  1) / 2)
+           && probe_count < (hash_size + 1) / 2)
     { // Has overflow occurred?
-        probe_count;
-        probe = (probe  increment) % hash_size;
+        probe_count++;
+        probe = (probe + increment) % hash_size;
         increment += 2; // Prepare increment for next iteration.
     }
     if (table[probe] == null)
