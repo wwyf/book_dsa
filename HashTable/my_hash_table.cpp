@@ -2,15 +2,24 @@
 #include <string>
 using namespace std;
 // 增删改查
-const int hash_size = 1009;
-
+enum Error_code{
+    success,
+    overflow,
+    duplicate_error
+};
 
 // the size of key is 8
 class Key{
 public:
-    Key(const std::string & str)；
+    Key(const std::string & str);
+    Key(){
+        key = "";
+    }
     char key_letter(int position) cosnt;
     void make_bland();
+    int size()const{
+        return key.size();
+    }
 private:
     std::string key;
 };
@@ -24,9 +33,14 @@ char Key::key_letter(int position) const{
 }
 
 void Key::make_bland(){
-
+    key = "";
 }
 
+class Record: public Key{
+public:
+    Record():Key(){}
+    Record(const std::string & str):Key(str) {}
+};
 
 int hash(const Key &target){
     int value = 0;
@@ -35,11 +49,6 @@ int hash(const Key &target){
     }
     return value % hash_size;
 }
-Key::Key(const std::string & str){
-    key = str;
-}
-
-
 // solve collision
 
 /* 
@@ -48,20 +57,23 @@ Key::Key(const std::string & str){
     3. quadratic probing */
 
 // quadratic probing
-const inst hash_size = 997;
+const inst hash_size = 17;
 class Hash_table{
 public:
     Hash_table();
     void clear();
     Error_code insert(const Record &new_entry);
-    Error_code retrieve(const Key & target, Record &found) const;
+    Error_code retrieve(const Key & target, Record & found) const;
+    void print() const;
 private:
     Record table[hash_size];
 };
 
 
 Hash_table::Hash_table(){
-
+    for(int i = 0; i < hash_size; i++){
+        table[i] = Key().make_bland();
+    
 }
 
 void Hash_table::clear(){
@@ -80,7 +92,7 @@ Error_code Hash_table::insert(const Record &new_entry)
         increment,   // Increment used for quadratic probing.
         probe;       // Position currently probed in the hash table.
     Key null;        // Null key for comparison purposes.
-    null.make_blank();
+    null.make_bland();
     probe = hash(new_entry);
     probe_count = 0;
     increment = 1;
@@ -99,4 +111,20 @@ Error_code Hash_table::insert(const Record &new_entry)
     else
         result = overflow; // The table is full.
     return result;
+}
+
+
+void  Hash_table::print() const {
+    for(int i = 0; i < hash_size; i++){
+        cout << table[i] << " ";
+    }
+    cout << endl;
+}
+
+
+int main(){
+    Hash_table test;
+    test.insert(Record("abc"))
+
+    return 0;    
 }
