@@ -8,7 +8,6 @@ enum Error_code{
     duplicate_error
 };
 
-// the size of key is 8
 class Key{
 public:
     Key(const std::string & str);
@@ -36,11 +35,14 @@ void Key::make_bland(){
     key = "";
 }
 
-class Record: public Key{
+class Record {
 public:
-    Record():Key(){}
-    Record(const std::string & str):Key(str) {}
+    char key_letter(int position) const;
+    Record(); // default constructor
+    operator Key( ) const; // cast to Key
+    // Add other methods and data members for the class.
 };
+
 
 int hash(const Key &target){
     int value = 0;
