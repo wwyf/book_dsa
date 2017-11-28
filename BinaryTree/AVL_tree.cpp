@@ -1,5 +1,5 @@
-//#include <iostream>
-//using namespace std;
+#include <iostream>
+using namespace std;
 
 enum Balance_factor{
     left_higher, 
@@ -39,11 +39,42 @@ struct AVL_Node{
 template <typename T>
 class AVL_Tree{
 public:
+    AVL_Tree(){
+        _root = NULL;
+    }
+    void tra(void (*visit)(const T &)){
+        preorder(_root, visit);
+    }
+    void preorder(AVL_Node<T> * sub_root, void (*visit)(const T &));
+    void inorder(AVL_Node<T> * sub_root, void (*visit)(const T &));
     Error_code insert(const T & new_data);
     Error_code remove(const T & old_data);
+    Error_code avl_insert(AVL_Node<T> * & sub_root, const T & new_data, bool & taller);
+    void rotate_left(AVL_Node<T> * & sub_root);
+    void rotate_right(AVL_Node<T> * & sub_root);
+    void right_balance(AVL_Node<T> * & sub_root);
+    void left_balance(AVL_Node<T> *& sub_root);
 private:
     AVL_Node<T> * _root;
 };
+
+template <typename T>
+void AVL_Tree<T>::preorder(AVL_Node<T> * sub_root, void (*visit)(const T &)){
+    if (sub_root){
+        visit(sub_root->_data);
+        preorder(sub_root->_left, visit);
+        preorder(sub_root->_right, visit);
+    }
+}
+
+template <typename T>
+void AVL_Tree<T>::inorder(AVL_Node<T> * sub_root, void (*visit)(const T &)){
+    if (sub_root){
+        inorder(sub_root->_left, visit);
+        visit(sub_root->_data);
+        inorder(sub_root->_right, visit);
+    }
+}
 
 
 template <typename T>
@@ -110,7 +141,7 @@ Error_code AVL_Tree<T>::avl_insert(AVL_Node<T> * & sub_root, const T & new_data,
 }
 
 template <typename T>
-void AVL_Tree<T>::rotate_left(AVL_Node<T> *& sub_root){
+void AVL_Tree<T>::rotate_left(AVL_Node<T> * & sub_root){
     if (sub_root == NULL || sub_root->_right == NULL)
         cout << "WARNING" << endl;
     else {
@@ -122,7 +153,7 @@ void AVL_Tree<T>::rotate_left(AVL_Node<T> *& sub_root){
 }
 
 template <typename T>
-void AVL_Tree::rotate_right(AVL_Tree<T> * & sub_root){
+void AVL_Tree<T>::rotate_right(AVL_Node<T> * & sub_root){
     if (sub_root == NULL || sub_root->_left == NULL)
         cout << "WARNING" << endl;
     else {
@@ -166,13 +197,13 @@ void AVL_Tree<T>::right_balance(AVL_Node<T> * & sub_root)
                 case left_higher:
                     sub_root->set_balance(equal_height);
                     right_tree->set_balance(right_higher);
-                    break
-                case right_heigher:
+                    break;
+                case right_higher:
                     sub_root->set_balance(left_higher);
                     right_tree->set_balance(equal_height);
                     break;
             }// 这里还是有点疑问的，具体的我画了个图方便理解
-            sub_tree->set_balance(euqal_height);
+            sub_tree->set_balance(equal_height);
             rotate_right(right_tree);
             rotate_left(sub_root);
             break;
@@ -183,23 +214,6 @@ template<typename T>
 void AVL_Tree<T>::left_balance(AVL_Node<T> *& sub_root){
     AVL_Node<T> *& left_tree = sub_root->_left;
     switch(left_tree->get_balance()){
-        case right_higher:
-            AVL_Node<T> * sub_tree = left_tree->_right;
-            switch(sub_tree->get_balance()){
-                case right_higher:
-
-                    break;
-                case equal_height:  
-
-                    break;
-                case left_higher:
-
-                    break;
-            }
-            sub_root->set_balance(equal_height);
-            rotate_left(left_tree);
-            rotate_right(sub_root);
-            break;
         case equal_height:
             cout << "WARNING" << endl;
             break;
@@ -208,5 +222,41 @@ void AVL_Tree<T>::left_balance(AVL_Node<T> *& sub_root){
             left_tree->set_balance(equal_height);
             rotate_right(sub_root);
             break;
+        case right_higher:
+            AVL_Node<T> * sub_tree = left_tree->_right;
+            switch(sub_tree->get_balance()){
+                case right_higher:
+                   left_tree->set_balance(left_higher);
+                   sub_root->set_balance(equal_height);
+                    break;
+                case equal_height:
+                    left_tree->set_balance(equal_height);
+                    sub_root->set_balance(equal_height);  
+                    break;
+                case left_higher:
+                    left_tree->set_balance(equal_height);
+                    sub_root->set_balance(right_higher);
+                    break;
+            }
+            sub_tree->set_balance(equal_height);
+            rotate_left(left_tree);
+            rotate_right(sub_root);
+            break;   
+       }
+}
+
+
+void print(const int & a){
+    cout << a << " ";
+}
+
+int main(){
+    AVL_Tree<int> test;
+    test.insert(1);
+    for (int i = 1; i < 10; i++){
+        test.insert(i);
+        test.tra(print);
+        cout << endl;
     }
+    return 0;
 }
