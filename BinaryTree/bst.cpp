@@ -48,7 +48,29 @@ public:
         else {
             return duplicate_error;
         }
-    } 
+    }
+
+    Node<T>* get_succ(Node<T> * cur_node){
+        // 返回右子树的最左节点
+        if (!cur_node->right) return NULL; // 此时后继应是该节点祖先
+        cur_node = cur_node->right;
+        while(cur_node->left){
+            cur_node = cur_node->left;
+        }
+        return cur_node;
+    }
+
+    Node<T> * get_prec(Node<T> * cur_node){
+        // 返回左子树的最右节点
+        if (!cur_node->left) return NULL;
+        // 此时后继应该是该节点的祖先
+        cur_node = cur_node->left;
+        while (cur_node->right){
+            cur_node = cur_node->right;
+        }
+        return cur_node;
+    }
+
     Error_code remove_root(Node<T> * & sub_root){
         if (sub_root == NULL)
             return is_null;
