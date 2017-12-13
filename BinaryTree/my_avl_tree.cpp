@@ -191,8 +191,6 @@ public:
         // left left
         if (balance > 1 && get_balance(sub_root->left_) >= 0 )// 注意等号
             return SingleRightRotate(sub_root);
-        // if (balance > 1)
-            // cout << balance << " " << get_balance(sub_root->left_) << endl;
         // left right
         if (balance > 1 && get_balance(sub_root->left_) < 0 ){
             return LeftRightRotate(sub_root);
