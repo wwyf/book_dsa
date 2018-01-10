@@ -47,14 +47,15 @@ void select_sort(int num[],int length)
 
 
 void insert_sort(int num[], int n){// 插入排序  赋值操作代价较高
-    int i, j;
-    for (i = 1; i < n; i++){// 开始排第i个元素，并且认为之前的元素已经有序
-        int temp = num[i];// 把当前要排的数先存着
-        for (j = i; j > 0 && num[j-1] > temp; j--)// 查看前面的数字是否比当前要插入的数字大，如果大，就放到后面去，如果小，就选定该位置插入
-            num[j] = num[j-1];
-        num[j] = temp;
-    }
+  int i, j;
+  for (i = 1; i < n; i++){// 开始排第i个元素，并且认为之前的元素已经有序
+      int temp = num[i];// 把当前要排的数先存着
+      for (j = i; j > 0 && num[j-1] > temp; j--)// 查看前面的数字是否比当前要插入的数字大，如果大，就放到后面去，如果小，就选定该位置插入
+          num[j] = num[j-1];
+      num[j] = temp;
+  }
 }
+ 
 template<typename T>
 void shell_sort(T num[], int length){
     int i, j, gap; // gap:步长
